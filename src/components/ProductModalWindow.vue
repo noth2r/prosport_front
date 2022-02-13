@@ -20,7 +20,7 @@
           />
         </div>
         <label for="load_img" class="load_img">
-          <standard-img :fullPath="getFullPath" :src="getProductImg" />
+          <standard-img :fullPath="getFullPath" :path="getProductImg" />
         </label>
       </div>
 

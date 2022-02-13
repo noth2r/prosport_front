@@ -37,7 +37,7 @@
             <standard-img
               v-if="icon === currentIcon"
               class="dynamic_btn_img"
-              :src="icon"
+              :path="icon"
             />
           </transition-group>
         </dynamic-button>

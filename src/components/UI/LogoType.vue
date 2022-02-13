@@ -1,6 +1,6 @@
 <template>
   <div class="logo_type">
-    <standard-img class="img" :src="'content/logo_square.png'" />
+    <standard-img class="img" :path="'content/logo_square.png'" />
   </div>
 </template>
 

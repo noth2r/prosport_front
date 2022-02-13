@@ -3,7 +3,7 @@
     <standard-img
       id="product_img"
       :fullPath="getFullPath"
-      :src="getProductImg"
+      :path="getProductImg"
       @loaded="_imgLoad"
     />
 

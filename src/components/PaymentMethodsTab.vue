@@ -4,7 +4,7 @@
       class="payment_method"
       v-for="(paymentMethod, i) in getPaymentMethods"
       :key="i"
-      :src="paymentMethod.img"
+      :path="paymentMethod.img"
       @click="setInnerTab(paymentMethod.paymentMethod)"
       alt=""
     />

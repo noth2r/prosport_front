@@ -1,13 +1,14 @@
 <template>
-  <img @load="onload" :src="loadImg()" />
+  <img @load="onload" :src="loadImg" />
 </template>
 
 <script>
 export default {
-  name: "standard-img",
+  name: 'standard-img',
+  functional: true,
 
   props: {
-    src: {
+    path: {
       type: String,
       required: true,
     },
@@ -18,25 +19,28 @@ export default {
   data() {
     return {
       loaded: false,
-    };
+    }
   },
 
   methods: {
-    loadImg(path = this.src) {
-      try {
-        return new URL(`./src/assets/${path}`, "http://127.0.0.1:3060");
-      } catch (error) {
-        console.log(error);
-        return new URL("./src/assets/content/not_found.svg", "http://127.0.0.1:3060");
-      }
-    },
-
     onload() {
-      this.loaded = true;
-      this.$emit("loaded");
+      this.loaded = true
+      this.$emit('loaded')
     },
   },
-};
+
+  computed: {
+    loadImg(path = '/') {
+      try {
+        path = '/'.concat(this.path ? this.path : path)
+        return new URL(path, import.meta.url)
+      } catch (error) {
+        console.log(error)
+        return new URL('/content/not_found.svg', import.meta.url)
+      }
+    },
+  },
+}
 </script>
 
 <style scoped>

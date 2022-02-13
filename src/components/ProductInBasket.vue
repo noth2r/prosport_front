@@ -19,9 +19,8 @@
       <div class="product_img">
         <standard-img
           class="img"
-          :folder="getFolder"
           :fullPath="getFullPath"
-          :src="getProductImg"
+          :path="getProductImg"
         />
       </div>
       <div class="product_in_basket_content">
