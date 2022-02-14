@@ -51,19 +51,19 @@ const ModalWindow = defineAsyncComponent(() =>
   import("@/components/ModalWindow")
 );
 const ProductsInBasketTab = defineAsyncComponent(() =>
-  import("@/components/ProductsInBasketTab.vue")
+  import("@/components/ProductsInBasketTab")
 );
 const OrderProductTab = defineAsyncComponent(() =>
-  import("@/components/OrderProductTab.vue")
+  import("@/components/OrderProductTab")
 );
 const PaymentMethodsTab = defineAsyncComponent(() =>
-  import("@/components/PaymentMethodsTab.vue")
+  import("@/components/PaymentMethodsTab")
 );
 const ProductPaymentFormTab = defineAsyncComponent(() =>
-  import("@/components/ProductPaymentFormTab.vue")
+  import("@/components/ProductPaymentFormTab")
 );
 const InternalNavbar = defineAsyncComponent(() =>
-  import("@/components/InternalNavbar.vue")
+  import("@/components/InternalNavbar")
 );
 
 export default {

@@ -43,7 +43,7 @@ import { defineAsyncComponent } from "@vue/runtime-core";
 import { mapActions } from "vuex";
 import { ObserveVisibility } from "vue3-observe-visibility";
 
-const Product = defineAsyncComponent(() => import("@/components/Product.vue"));
+const Product = defineAsyncComponent(() => import("@/components/Product"));
 
 export default {
   name: "products",

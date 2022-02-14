@@ -15,7 +15,7 @@
 import { defineAsyncComponent } from "@vue/runtime-core";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 const Products = defineAsyncComponent(() =>
-  import("@/components/Products.vue")
+  import("@/components/Products")
 );
 
 export default {

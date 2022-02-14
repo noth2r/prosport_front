@@ -23,7 +23,7 @@ const AdminAuthentication = defineAsyncComponent(() =>
   import("@/components/AdminAuthentication")
 );
 const Products = defineAsyncComponent(() =>
-  import("@/components/Products.vue")
+  import("@/components/Products")
 );
 
 export default {

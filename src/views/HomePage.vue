@@ -22,7 +22,7 @@ import { defineAsyncComponent } from "@vue/runtime-core";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 const Products = defineAsyncComponent(() =>
-  import("@/components/Products.vue")
+  import("@/components/Products")
 );
 import Categories from "@/components/Categories";
 import AddEmail from "@/components/AddEmail";

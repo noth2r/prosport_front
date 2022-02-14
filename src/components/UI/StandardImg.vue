@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "standard-img",
+  name: 'standard-img',
   functional: true,
 
   props: {
@@ -20,27 +20,27 @@ export default {
     return {
       loaded: false,
       exception: null,
-    };
+    }
   },
 
   methods: {
     onload() {
-      this.loaded = true;
-      this.$emit("loaded");
+      this.loaded = true
+      this.$emit('loaded')
     },
 
     onerror() {
-      this.exception = new URL("/content/not_found.svg", import.meta.url);
+      this.exception = new URL('/content/not_found.svg', window.location.origin).href
     },
   },
 
   computed: {
-    loadImg(path = "/") {
-      path = "/".concat(this.path ? this.path : path);
-      return new URL(path, import.meta.url);
+    loadImg(path) {
+      path = '/'.concat(this.path || path)
+      return new URL(path, window.location.origin).href
     },
   },
-};
+}
 </script>
 
 <style scoped>

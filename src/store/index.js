@@ -10,9 +10,6 @@ import modalWindows from "./modules/modalWindows";
 
 export default createStore({
   state: () => ({
-    // API_URL: "http://localhost:3030",
-    // API_URL: window.location.origin + ":3030",
-    // API_URL: "https://3030-usr9548-prosport-xdkzn250pd8.ws-eu31.gitpod.io/",
     PICTURE_NOT_FOUND: "not_found.svg",
   }),
 
