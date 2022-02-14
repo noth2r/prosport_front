@@ -9,12 +9,18 @@ export default defineConfig({
     },
     extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
   },
-
   publicDir: "./src/assets",
 
-  // build: {
-    // rollupOptions: {},
-  // },
+  build: {
+    outDir: "build",
+    assetsDir: "./build/assets",
+    rollupOptions: {
+      external: ["vue"],
+      globals: {
+        vue: "Vue",
+      },
+    },
+  },
 
   server: {
     port: 3060,
@@ -26,6 +32,10 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
+  },
+
+  preview: {
+    port: 8080,
   },
 
   plugins: [

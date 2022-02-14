@@ -2,28 +2,38 @@
   <block-with-title :title="title" class="products">
     <transition name="preload_anim">
       <div class="preload" v-show="loading">
-        <standard-img src="content/logo_notext.png" />
+        <standard-img :path="'content/logo_notext.png'" />
       </div>
     </transition>
     <div class="products_box">
-      <div class="content" @click="_productClick">
-        <div v-for="product in products" :key="product.id">
-          <product
-            :id="product.id"
-            :class="classProduct"
-            :product="product"
-            :isAdmin="isAdmin"
-          />
+      <div style="position: relative">
+        <div
+          v-observe-visibility="{
+            callback: _observerCallbackTop,
+            throttle: 300,
+          }"
+          style="width: 100%; height: 2vmax; position: absolute; top: 0"
+        ></div>
+        <div class="content" @click="_productClick">
+          <TransitionGroup name="products-list">
+            <div v-for="product in productsChunk" :key="product.id">
+              <product
+                :id="product.id"
+                :class="classProduct"
+                :product="product"
+                :isAdmin="isAdmin"
+              />
+            </div>
+          </TransitionGroup>
         </div>
+        <div
+          v-observe-visibility="{
+            callback: _observerCallbackBottom,
+            throttle: 300,
+          }"
+          style="width: 100%; height: 2vmax; position: absolute; bottom: 0"
+        ></div>
       </div>
-      <div
-        v-observe-visibility="{
-          callback: _observerCallback,
-          intersection,
-          throttle: 300,
-        }"
-        style="width: 100%; height: 1vmax"
-      ></div>
     </div>
   </block-with-title>
 </template>
@@ -54,10 +64,9 @@ export default {
 
   data() {
     return {
-      intersection: {
-        rootMargin: "0px",
-        threshold: 0,
-      },
+      chunkStartIndex: 0,
+      chunkSize: 30,
+      productsChunk: [],
       loading: true,
       classProduct: "product",
       productIdList: {
@@ -77,25 +86,41 @@ export default {
       addToCart: "basketWindow/addToCartAction",
     }),
 
-    _loadProducts() {
+    _emitGetProducts() {
       this.$emit("get-products", this.title);
     },
 
-    _observerCallback(isVisible) {
-      if (isVisible) {
-        this.loading = true;
-        this._loadProducts();
-        this.$nextTick()
-          .then(() => {
-            this.loading = false;
-          })
-          .catch((rej) => {
-            throw new Error(rej);
-          });
+    loadPreview() {
+      this.loading = true;
+      this.$nextTick()
+        .then(() => {
+          this.loading = false;
+        })
+        .catch((rej) => {
+          throw new Error(rej);
+        });
+    },
+
+    loadProducts() {
+      if (!this.loading) {
+        this._emitGetProducts();
+        this.loadPreview();
       }
     },
 
-    searchProductById(id) {
+    _observerCallbackTop(isVisible) {
+      if (isVisible && !this.loading && this.chunkStartIndex > 0) {
+        this._productsChunkUp();
+      }
+    },
+
+    _observerCallbackBottom(isVisible) {
+      if (isVisible && !this.loading) {
+        this._productsChunkDown();
+      }
+    },
+
+    _searchProductById(id) {
       for (const key in this.products) {
         const product = this.products[key];
         if (id == product.id) {
@@ -107,14 +132,14 @@ export default {
     },
 
     _showProduct(productId) {
-      const product = this.searchProductById(productId);
+      const product = this._searchProductById(productId);
       this.setProductWindow(product)
         .then(() => this.setWindowVisible("productWindow"))
         .catch(console.error);
     },
 
     _addToCart(productId) {
-      const product = this.searchProductById(productId);
+      const product = this._searchProductById(productId);
       this.addToCart(product);
     },
 
@@ -141,11 +166,60 @@ export default {
         this._deleteProduct(productId);
       }
     },
+
+    _productsChunkUp() {
+      queueMicrotask(() => {
+        if (this._getPreviousChunkStartIndex > 0) {
+          this.chunkStartIndex = this._getPreviousChunkStartIndex;
+          const end = this.chunkStartIndex + this.chunkSize;
+          this.productsChunk = this.products.slice(this.chunkStartIndex, end);
+        }
+      });
+    },
+
+    _productsChunkDown() {
+      queueMicrotask(() => {
+        if (this._getNextChunkEndIndex < this._getProductsLength) {
+          this.chunkStartIndex = this._getNextChunkStartIndex;
+          const end = this.chunkStartIndex + this.chunkSize;
+          this.productsChunk = this.products.slice(this.chunkStartIndex, end);
+        } else {
+          this.loadProducts();
+        }
+      });
+    },
+  },
+
+  watch: {
+    products: function (newProducts) {
+      this._productsChunkDown();
+    },
+  },
+
+  computed: {
+    _getProductsLength() {
+      return this.products?.length || 0;
+    },
+    _getProductsChunkLength() {
+      return this.productsChunk?.length || 0;
+    },
+    _getNextChunkStartIndex() {
+      return this.chunkStartIndex + this.chunkSize * 0.5;
+    },
+    _getNextChunkEndIndex() {
+      return this._getNextChunkStartIndex + this.chunkSize;
+    },
+    _getPreviousChunkStartIndex() {
+      return this.chunkStartIndex - this.chunkSize * 0.5;
+    },
   },
 
   mounted() {
-    setTimeout(this._loadProducts, 1000);
-    this.loading = false;
+    this._productsChunkDown();
+    this.$nextTick(() => {
+      this.chunkStartIndex = this._getPreviousChunkStartIndex;
+      this.loading = false;
+    });
   },
 };
 </script>
@@ -154,15 +228,12 @@ export default {
 .products {
   position: relative;
 }
-
-.preload_anim-enter-active,
-.preload_anim-leave-active {
-  transition: 1s ease-in;
+.preload_anim-enter-active {
+  transition: 2s ease;
 }
 
-.preload_anim-enter-active img,
-.preload_anim-leave-active img {
-  animation: load 1.5s infinite linear;
+.preload_anim-leave-active {
+  transition: 1s;
 }
 
 .preload_anim-enter,
@@ -177,17 +248,19 @@ export default {
   padding: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: inherit;
   z-index: 10;
-  background: rgba(250, 250, 250, 0.9);
+  background: rgba(250, 250, 250, 1);
 }
 
 .preload img {
   width: 4vmax;
   height: 4vmax;
+  animation: 1s infinite 0s load linear;
 }
 
 @keyframes load {
@@ -199,6 +272,21 @@ export default {
 .products_box {
   overflow: auto;
   transition: 0.25s;
+}
+
+.products-list-enter-active,
+.products-list-leave-active {
+  transition: all 0.5s;
+}
+
+.products-list-enter-from,
+.products-list-leave-to {
+  opacity: 0;
+  transform: translate(0) scale(0.6);
+}
+
+.content {
+  overflow: hidden;
 }
 
 @media screen and (orientation: landscape) {
@@ -213,8 +301,6 @@ export default {
     grid-column-gap: 1vmax;
     grid-row-gap: 1.5vmax;
 
-    overflow-x: hidden;
-    overflow-y: auto;
     border-radius: inherit;
   }
   .content .product {
@@ -235,8 +321,6 @@ export default {
     grid-column-gap: 1.5vmax;
     grid-row-gap: 1.5vmax;
 
-    overflow-x: hidden;
-    overflow-y: auto;
     border-radius: inherit;
   }
 }

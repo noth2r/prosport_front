@@ -27,7 +27,7 @@ export default {
 
   mutations: {
     clearProductsMutation(state) {
-      state.sortedProducts = {};
+      state.sortedProducts = {}
     },
 
     updateProductTitleMutation(state, v) {

@@ -41,7 +41,7 @@ export default {
 .standard_block-enter-active,
 .standard_block-leave-to {
   opacity: 0;
-  transform: scale(0.8);
+  transform: scale(0.6);
 }
 
 .standard_block-enter-to {

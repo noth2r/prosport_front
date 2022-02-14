@@ -2,8 +2,7 @@ import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 const devMode = (process.env.NODE_ENV === 'development');
 
 export default [
-    // ES6 bundle
-    {
+    { // ES6 bundle
         input: './src/main.js',
         watch: {
             include: './src/**',
@@ -16,8 +15,7 @@ export default [
         }
     },
 
-    // ES5
-    {
+    { // ES5
       input: './src/main.js',
       plugins: [
         getBabelOutputPlugin({

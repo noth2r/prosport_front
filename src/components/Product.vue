@@ -1,5 +1,5 @@
 <template>
-  <standard-block :visible="visible" class="product" :appear="false">
+  <standard-block :visible="visible" class="product" appear>
     <standard-img
       id="product_img"
       :fullPath="getFullPath"
