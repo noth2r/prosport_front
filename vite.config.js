@@ -1,5 +1,6 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
+import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
@@ -13,12 +14,9 @@ export default defineConfig({
 
   build: {
     outDir: 'build',
-    // rollupOptions: {
-    // external: ['vue'],
-    // globals: {
-    //   vue: "Vue",
-    // },
-    // },
+    assetsDir: 'assets',
+    // rollupOptions: {},
+    dynamicImportVars: dynamicImportVars(),
   },
 
   server: {
