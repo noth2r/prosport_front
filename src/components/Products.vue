@@ -270,8 +270,13 @@ export default {
 }
 
 .products_box {
+  scrollbar-width: none;
   overflow: auto;
   transition: 0.25s;
+}
+
+.products_box::-webkit-scrollbar {
+  display: none;
 }
 
 .products-list-enter-active,
